@@ -1,7 +1,5 @@
 <?php
 $pages = array();
-$pages["index.php"] = "index";
-$pages["data_rule.php"] = "data_rule";
 ?>
 
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
@@ -18,7 +16,7 @@ $pages["data_rule.php"] = "data_rule";
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item <?php echo ($pages == "index" ? "active" : ""); ?>">
+    <li class="nav-item <?php echo ($pages == "index.php" ? "active" : ""); ?>">
         <a class="nav-link" href="index.php">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
@@ -33,7 +31,7 @@ $pages["data_rule.php"] = "data_rule";
     </div>
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item <?php echo ($pages == "data_rule" ? "active" : "") ?>">
+    <li class="nav-item <?php echo ($pages == "data_rule.php" ? "active" : "") ?>">
         <a class="nav-link" href="data_rule.php">
             <i class="fas fa-fw fa-cog"></i>
             <span>Rules</span>
