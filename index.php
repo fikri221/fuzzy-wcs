@@ -1,5 +1,7 @@
 <!-- Header -->
-<?php include "layouts/header.php" ?>
+<?php $page = "home";
+$title = "Dashboard";
+include "layouts/header.php" ?>
 <!-- End of Header -->
 
 <body id="page-top">
@@ -8,7 +10,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <?php include "sidebar.php" ?>
+        <?php include "layouts/sidebar.php" ?>
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
@@ -30,86 +32,126 @@
                     </div>
 
                     <!-- Content Row -->
-                    <div class="row">
+                    <?php
+                    require_once "koneksi.php";
+                    $sql = "SELECT * FROM `data` ORDER BY `tanggal` DESC LIMIT 1";
+                    $query = mysqli_query($con, $sql) or die("Gagal" . mysqli_error($con));
+                    while ($row = mysqli_fetch_array($query)) {
+                    ?>
+                        <div class="row">
 
-                        <!-- Suhu Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Suhu</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Kadar pH Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Kadar pH</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Nutrisi Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Nutrisi
+                            <!-- Suhu Card Example -->
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-primary shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                    Suhu</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $row['suhu'] ?>&deg Celcius</div>
                                             </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-temperature-high fa-2x text-primary"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Kadar pH Card Example -->
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-danger shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                    Kadar pH</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $row['ph'] ?></div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-vial fa-2x text-danger"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nutrisi Card Example -->
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-info shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Nutrisi
                                                 </div>
-                                                <div class="col">
-                                                    <div class="progress progress-sm mr-2">
-                                                        <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col-auto">
+                                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?= $row['nutrisi'] ?>%</div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-clipboard-list fa-2x text-info"></i>
+                                            </div>
                                         </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ketinggian Air Card Example -->
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-success shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                    Ketinggian Air</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $row['ketinggian_air'] ?>cm</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-ruler-vertical fa-2x text-success"></i>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    <?php } ?>
 
-                        <!-- Ketinggian Air Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Ketinggian Air</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="card shadow mb-4 my-5">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Tanggal</th>
+                                            <th>Suhu</th>
+                                            <th>Kadar pH</th>
+                                            <th>Nutrisi</th>
+                                            <th>Ketinggian Air</th>
+                                            <th>THEN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        require_once "koneksi.php";
+                                        $sql_rule = mysqli_query($con, "SELECT * FROM `data` ORDER BY `tanggal` DESC") or die("Gagal " . mysqli_error($con));
+                                        while ($row = mysqli_fetch_array($sql_rule)) {
+                                        ?>
+                                            <tr>
+                                                <td><a href="hasil.php?edit=<?= $row['id'] ?>"><?= date("j F Y, g:i a", strtotime($row['tanggal'])) ?></a></td>
+                                                <td><?= $row['suhu']; ?></td>
+                                                <td><?= $row['ph']; ?></td>
+                                                <td><?= $row['nutrisi']; ?>%</td>
+                                                <td><?= $row['ketinggian_air']; ?>cm</td>
+                                                <td><?= $row['hasil']; ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -154,9 +196,9 @@
         </div>
     </div>
 
-<!-- Scripts -->
-<?php include "layouts/scripts.php" ?>
-<!-- End of Scripts -->
+    <!-- Scripts -->
+    <?php include "layouts/scripts.php" ?>
+    <!-- End of Scripts -->
 
 </body>
 
