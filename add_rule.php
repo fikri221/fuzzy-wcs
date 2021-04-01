@@ -1,5 +1,6 @@
 <!-- Header -->
-<?php include "layouts/header.php" ?>
+<?php $title = "Add New Rule";
+include "layouts/header.php" ?>
 <!-- End of Header -->
 
 <body id="page-top">
@@ -8,7 +9,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <?php include "sidebar.php" ?>
+        <?php include "layouts/sidebar.php" ?>
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
@@ -16,14 +17,31 @@
 
             <!-- Main Content -->
             <?php
-            // Jika Input Baru
-            $suhu = 0;
-            $ph = 0;
-            $nutrisi = 0;
-            $ketinggian_air = 0;
-            $hasil = 0;
+            // Jika Memperbarui Data
+            if (isset($_GET['edit'])) {
+                $id = $_GET['edit'];
 
-            $link = "action.php?action=save-rule";
+                require_once "koneksi.php";
+                $sql = mysqli_query($con, "SELECT * FROM `rule` WHERE `id`='$id'");
+                if ($row = mysqli_fetch_array($sql)) {
+                    $suhu = $row['suhu'];
+                    $ph = $row['ph'];
+                    $nutrisi = $row['nutrisi'];
+                    $ketinggian_air = $row['ketinggian_air'];
+                    $hasil = $row['hasil'];
+
+                    $link = "action.php?action=update-rule&id=" . $id;
+                }
+            } else {
+                // Jika Input Data Baru
+                $suhu = 0;
+                $ph = 0;
+                $nutrisi = 0;
+                $ketinggian_air = 0;
+                $hasil = 0;
+
+                $link = "action.php?action=save-rule";
+            }
             ?>
             <div id="content">
 
