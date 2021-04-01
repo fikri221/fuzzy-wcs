@@ -1,5 +1,7 @@
 <!-- Header -->
-<?php include "layouts/header.php" ?>
+<?php $page = "data_rule";
+$title = "Rule";
+include "layouts/header.php" ?>
 <!-- End of Header -->
 
 <body id="page-top">
@@ -8,7 +10,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <?php include "sidebar.php" ?>
+        <?php include "layouts/sidebar.php" ?>
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
@@ -48,6 +50,7 @@
                                             <th>Nutrisi</th>
                                             <th>Ketinggian Air</th>
                                             <th>THEN</th>
+                                            <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -63,6 +66,9 @@
                                                 <td>Nutrisi <?php echo $row['nutrisi']; ?></td>
                                                 <td>Ketinggian <?php echo $row['ketinggian_air']; ?></td>
                                                 <td><?php echo $row['hasil']; ?></td>
+                                                <td class="text-center"><a class="badge badge-success" href="add_rule.php?edit=<?= $row['id'] ?>">Edit</a> /
+                                                    <a class="badge badge-danger" href="action.php?action=delete-rule&id=<?= $row['id'] ?>">Delete</a>
+                                                </td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>
