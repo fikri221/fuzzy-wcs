@@ -98,18 +98,18 @@ include "layouts/header.php" ?>
                                 </div>
                             </div>
 
-                            <!-- Ketinggian Air Card Example -->
+                            <!-- Kelembapan Card Example -->
                             <div class="col-xl-3 col-md-6 mb-4">
-                                <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card border-left-warning shadow h-100 py-2">
                                     <div class="card-body">
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                    Ketinggian Air</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $row['ketinggian_air'] ?>cm</div>
+                                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                    Kelembapan</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $row['kelembapan'] ?>%</div>
                                             </div>
                                             <div class="col-auto">
-                                                <i class="fas fa-ruler-vertical fa-2x text-success"></i>
+                                                <i class="fas fa-wind fa-2x text-warning"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -131,7 +131,7 @@ include "layouts/header.php" ?>
                                             <th>Suhu</th>
                                             <th>Kadar pH</th>
                                             <th>Nutrisi</th>
-                                            <th>Ketinggian Air</th>
+                                            <th>Kelembapan</th>
                                             <th>THEN</th>
                                         </tr>
                                     </thead>
@@ -146,7 +146,7 @@ include "layouts/header.php" ?>
                                                 <td><?= $row['suhu']; ?></td>
                                                 <td><?= $row['ph']; ?></td>
                                                 <td><?= $row['nutrisi']; ?>%</td>
-                                                <td><?= $row['ketinggian_air']; ?>cm</td>
+                                                <td><?= $row['kelembapan']; ?>%</td>
                                                 <td><?= $row['hasil']; ?></td>
                                             </tr>
                                         <?php } ?>
