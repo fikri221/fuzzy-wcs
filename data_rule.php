@@ -48,7 +48,7 @@ include "layouts/header.php" ?>
                                             <th>Suhu</th>
                                             <th>Kadar pH</th>
                                             <th>Nutrisi</th>
-                                            <th>Ketinggian Air</th>
+                                            <th>Kelembapan</th>
                                             <th>THEN</th>
                                             <th class="text-center">Action</th>
                                         </tr>
@@ -64,7 +64,7 @@ include "layouts/header.php" ?>
                                                 <td>Suhu <?php echo $row['suhu']; ?></td>
                                                 <td>pH <?php echo $row['ph']; ?></td>
                                                 <td>Nutrisi <?php echo $row['nutrisi']; ?></td>
-                                                <td>Ketinggian <?php echo $row['ketinggian_air']; ?></td>
+                                                <td>Ketinggian <?php echo $row['kelembapan']; ?></td>
                                                 <td><?php echo $row['hasil']; ?></td>
                                                 <td class="text-center"><a class="badge badge-success" href="add_rule.php?edit=<?= $row['id'] ?>">Edit</a> /
                                                     <a class="badge badge-danger" href="action.php?action=delete-rule&id=<?= $row['id'] ?>">Delete</a>
