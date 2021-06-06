@@ -4,18 +4,37 @@ include "layouts/header.php" ?>
 <!-- End of Header -->
 
 <?php
+// Panggil koneksi.php
 require_once "koneksi.php";
-$id = $_GET['edit'];
-$sql = "SELECT * FROM `data` WHERE id = $id";
+
+// Mengambil id data yang akan dihitung
+$id_data = $_GET['edit'];
+$sql = "SELECT * FROM `data` WHERE id = $id_data";
 $query = mysqli_query($con, $sql) or die("Gagal" . mysqli_error($con));
 while ($row = mysqli_fetch_array($query)) {
     $suhu = $row['suhu'];
     $kelembapan = $row['kelembapan'];
 }
 
+include "simpan_data.php";
+require "get_data.php";
 require "fungsi_perhitungan.php";
+require "mesin_inferensi.php";
+
+// Menentukan nilai suhu min, med dan max
+$get_suhu = get_suhu();
+
+// Menentukan nilai kelemb. udara min, med dan max
+$get_klb_udara = get_klb_udara();
+
 // Menentukan nilai minimum dan maksimum suhu
-$nilai_suhu = new Suhu(10, 20, 30, 35, 40);
+$nilai_suhu = new Suhu(
+    $get_suhu['min'],
+    $get_suhu['medA'],
+    $get_suhu['medB'],
+    $get_suhu['medC'],
+    $get_suhu['max']
+);
 $min_suhu = $nilai_suhu->min_suhu;
 $medA_suhu = $nilai_suhu->medA_suhu;
 $medB_suhu = $nilai_suhu->medB_suhu;
@@ -23,16 +42,25 @@ $medC_suhu = $nilai_suhu->medC_suhu;
 $max_suhu = $nilai_suhu->max_suhu;
 
 // Menentukan nilai minimum dan maksimum kelembapan air
-$nilai_kelembapan = new Kelembapan(20, 35, 50, 65, 80);
+$nilai_kelembapan = new Kelembapan(
+    $get_klb_udara['min'],
+    $get_klb_udara['medA'],
+    $get_klb_udara['medB'],
+    $get_klb_udara['medC'],
+    $get_klb_udara['max']
+);
 $min_kelembapan = $nilai_kelembapan->min_kelembapan;
 $medA_kelembapan = $nilai_kelembapan->medA_kelembapan;
 $medB_kelembapan = $nilai_kelembapan->medB_kelembapan;
 $medC_kelembapan = $nilai_kelembapan->medC_kelembapan;
 $max_kelembapan = $nilai_kelembapan->max_kelembapan;
 
-// Perhitungan dilakukan pada File 'fungsi_perhitungan.php'
-$hitung = new Perhitungan();
+// Fuzzyfikasi dilakukan pada File 'fungsi_perhitungan.php'
+$hitung = new Fuzzyfikasi();
 $hasil = $hitung->hitung($suhu, $kelembapan);
+
+// Perhitungan Menggunakan Mesin Inferensi
+$inferensi = new Mesin_Inferensi();
 
 // Mengeluarkan Value Dari Array Multi
 $hasil_suhu = $hasil['suhu'];
@@ -140,8 +168,8 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th width="50%">Suhu</th>
-                                            <th width="50%">Ketinggian Air</th>
+                                            <th width="50%">Suhu (<?= $suhu ?>)</th>
+                                            <th width="50%">Kelembapan Udara (<?= $kelembapan ?>)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -158,11 +186,11 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                                 1 = <?= $suhu ?> ≤ <?= $min_suhu ?>
                                             </td>
                                             <td>
-                                                Rendah = (<?= round($hasil_kelembapan['rendah'], 3); ?>) <br>
+                                                Kering = (<?= round($hasil_kelembapan['kering'], 3); ?>) <br>
                                                 0 = <?= $kelembapan ?> ≥ <?= $medB_kelembapan ?> <br>
                                                 <?= $min_kelembapan ?> ≤ <?= $kelembapan ?> ≤ <?= $medB_kelembapan ?> <br>
                                                 <?php
-                                                if ($hasil_kelembapan['rendah'] > 0 && $hasil_kelembapan['rendah'] != 1) {
+                                                if ($hasil_kelembapan['kering'] > 0 && $hasil_kelembapan['kering'] != 1) {
                                                     echo "( " . $medB_kelembapan . " - " . $kelembapan . " )" . " / " . "( " . $medB_kelembapan . " - " . $min_kelembapan . " )" . "<br>";
                                                 }
                                                 ?>
@@ -174,21 +202,21 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                                 Sedang = (<?= round($hasil_suhu['sedang'], 3); ?>) <br>
                                                 0 = <?= $suhu ?> ≤ <?= $medA_suhu ?> <strong>atau</strong>
                                                 <?= $suhu ?> ≥ <?= $medC_suhu ?> <br>
-                                                <?= $medA_suhu ?> ≤ <?= $suhu ?> ≤ <?= $medB_suhu ?> <br>
                                                 <?php
-                                                if ($hasil_suhu['sedang'] > 0) {
+                                                if ($hasil_suhu['sedang'] > 0 && $medA_suhu <= $suhu && $suhu <= $medB_suhu) {
+                                                    echo $medA_suhu . " ≤ " . $suhu . " ≤ " . $medB_suhu . "<br>";
                                                     echo "( " . $suhu . " - " . $medA_suhu . " )" . " / " . "( " . $medB_suhu . " - " . $medA_suhu . " )" . "<br>";
                                                 }
                                                 ?>
-                                                <?= $medB_suhu ?> ≤ <?= $suhu ?> ≤ <?= $medC_suhu ?> <br>
                                                 <?php
-                                                if ($hasil_suhu['sedang'] > 0) {
+                                                if ($hasil_suhu['sedang'] > 0 && $medB_suhu <= $suhu && $suhu <= $medC_suhu) {
+                                                    echo $medB_suhu . " ≤ " . $suhu . " ≤ " . $medC_suhu . "<br>";
                                                     echo "( " . $medB_suhu . " - " . $suhu . " )" . " / " . "( " . $medC_suhu . " - " . $medB_suhu . " )";
                                                 }
                                                 ?>
                                             </td>
                                             <td>
-                                                Sedang = (<?= round($hasil_kelembapan['sedang'], 3); ?>) <br>
+                                                Lembap = (<?= round($hasil_kelembapan['sedang'], 3); ?>) <br>
                                                 0 = <?= $kelembapan ?> ≤ <?= $medA_kelembapan ?> <strong>atau</strong>
                                                 <?= $kelembapan ?> ≥ <?= $medC_kelembapan ?> <br>
                                                 <?= $medA_kelembapan ?> ≤ <?= $kelembapan ?> ≤ <?= $medB_kelembapan ?> <br>
@@ -218,11 +246,11 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                                 1 = <?= $suhu ?> ≥ <?= $max_suhu ?>
                                             </td>
                                             <td>
-                                                Tinggi = (<?= round($hasil_kelembapan['tinggi'], 3); ?>) <br>
+                                                Basah = (<?= round($hasil_kelembapan['basah'], 3); ?>) <br>
                                                 0 = <?= $kelembapan ?> ≤ <?= $medB_kelembapan ?> <br>
                                                 <?= $medB_kelembapan ?> ≤ <?= $kelembapan ?> ≤ <?= $max_kelembapan ?> <br>
                                                 <?php
-                                                if ($hasil_kelembapan['tinggi'] > 0 && $hasil_kelembapan['tinggi'] != 1) {
+                                                if ($hasil_kelembapan['basah'] > 0 && $hasil_kelembapan['basah'] != 1) {
                                                     echo "( " . $kelembapan . " - " . $medB_kelembapan . " )" . " / " . "( " . $max_kelembapan . " - " . $medB_kelembapan . " )" . "<br>";
                                                 }
                                                 ?>
@@ -246,8 +274,6 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                     <thead>
                                         <tr>
                                             <th>Suhu</th>
-                                            <th>Kadar pH</th>
-                                            <th>Nutrisi</th>
                                             <th>Kelembapan</th>
                                             <th>THEN</th>
                                         </tr>
@@ -255,17 +281,116 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                     <tbody>
                                         <?php
                                         require_once "koneksi.php";
-                                        $sql_rule = mysqli_query($con, "SELECT * FROM `data` ORDER BY `tanggal` DESC") or die("Gagal " . mysqli_error($con));
+                                        $sql_rule = mysqli_query($con, "SELECT * FROM `rule`") or die("Gagal " . mysqli_error($con));
                                         while ($row = mysqli_fetch_array($sql_rule)) {
+                                            $cari_min = array($hasil_suhu[$row['suhu']], $hasil_kelembapan[$row['kelembapan']]);
                                         ?>
                                             <tr>
-                                                <td><?= $row['suhu']; ?></td>
-                                                <td><?= $row['ph']; ?></td>
-                                                <td><?= $row['nutrisi']; ?>%</td>
-                                                <td><?= $row['kelembapan']; ?>%</td>
-                                                <td><?= $row['hasil']; ?></td>
+                                                <td>
+                                                    <?= $row['suhu']; ?> (<?= $hasil_suhu[$row['suhu']] ?>)
+                                                </td>
+                                                <td>
+                                                    <?= $row['kelembapan']; ?> (<?= ($hasil_kelembapan[$row['kelembapan']] === NULL) ? 0 : $hasil_kelembapan[$row['kelembapan']] ?>)
+                                                </td>
+                                                <td>
+                                                    <?= $row['hasil']; ?> (<?= (min($cari_min) === NULL) ? 0 : min($cari_min) ?>) <br>
+                                                    <?php
+                                                    if ($row['hasil'] == "cepat") {
+                                                        echo "α-predikat" . $row['id'] . " = " . min($cari_min) . "<br>";
+                                                        $var1 = 8;
+                                                        echo "z" . $row['id'] . ": " . min($cari_min) . " = " . "($var1 - z" . $row['id'] .
+                                                            ")" . " / " . "($var2)" . "<br>";
+                                                        echo round($inferensi->hasil_cepat($cari_min), 3);
+                                                    } else if ($row['hasil'] == "normal") {
+                                                        $var1 = 5;
+                                                        $var2 = 8 - 5;
+                                                        echo "α-predikat" . $row['id'] . " = " . (min($cari_min) === NULL) ? "α-predikat" . $row['id'] . " = " . '0' . '<br>' : min($cari_min) . "<br>";
+                                                        echo "z" . $row['id'] . ": " . (min($cari_min) === NULL) ? "z" . $row['id'] . ": " . '0' . " = " . "(z" . $row['id'] .  " - $var1)" .
+                                                            " / " . "($var2)" . "<br>" : min($cari_min) . " = " . "(z" . $row['id'] .  " - $var1)" .
+                                                            " / " . "($var2)" . "<br>";
+                                                        echo round($inferensi->hasil_normal($cari_min), 3);
+                                                    } else {
+                                                        $var1 = 15;
+                                                        $var2 = 15 - 8;
+                                                        echo "α-predikat" . $row['id'] . " = " . min($cari_min) . "<br>";
+                                                        echo "z" . $row['id'] . ": " . min($cari_min) . " = " . "($var1 - z" . $row['id'] .
+                                                            ")" . " / " . "($var2)" . "<br>";
+                                                        echo round($inferensi->hasil_lama($cari_min), 3);
+                                                    }
+                                                    ?>
+
+                                                </td>
                                             </tr>
                                         <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Defuzzifikasi -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Defuzzifikasi</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Metode Average</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        require_once "koneksi.php";
+                                        $pred = 0;
+                                        $hitung_total = 0;
+                                        $hasil_hitung_cepat = 0;
+                                        $hasil_hitung_normal = 0;
+                                        $hasil_hitung_lama = 0;
+                                        $sql_rule = mysqli_query($con, "SELECT * FROM `rule`") or die("Gagal " . mysqli_error($con));
+                                        while ($row = mysqli_fetch_array($sql_rule)) {
+                                            $cari_min = array($hasil_suhu[$row['suhu']], $hasil_kelembapan[$row['kelembapan']]);
+                                            if ($row['hasil'] == 'cepat') {
+                                                $hitungan_cepat = min($cari_min) * $inferensi->hasil_cepat($cari_min);
+                                                $hasil_hitung_cepat += $hitungan_cepat;
+                                            } elseif ($row['hasil'] == 'normal') {
+                                                $hitungan_normal = min($cari_min) * $inferensi->hasil_normal($cari_min);
+                                                $hasil_hitung_normal += $hitungan_normal;
+                                            } else {
+                                                $hitungan_lama = min($cari_min) * $inferensi->hasil_lama($cari_min);
+                                                $hasil_hitung_lama += $hitungan_lama;
+                                            }
+                                            $hitung_total = $hasil_hitung_cepat + $hasil_hitung_normal + $hasil_hitung_lama;
+                                            $pred += min($cari_min);
+                                            if ($hitung_total != 0 && $pred != 0) {
+                                                $hasil_defuzzy = $hitung_total / $pred . "<br>";
+                                            }
+                                        }
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <?php
+                                                $query = "SELECT `id_data` FROM `hasil` WHERE `id_data` = '$id_data'";
+                                                $result = mysqli_query($con, $query);
+                                                // Mengecek hasil dari id_data sudah terdapat di database
+                                                if (mysqli_num_rows($result) > 0) {
+                                                    echo round($hitung_total, 3) . ' / ' . $pred . " = " . $hasil_defuzzy;
+                                                    if ($hasil_defuzzy >= 8) {
+                                                        echo "Waktu Penyiraman Lama";
+                                                    }
+                                                } else {
+                                                    echo round($hitung_total, 3) . ' / ' . $pred . " = " . $hasil_defuzzy;
+                                                    if ($hasil_defuzzy >= 8) {
+                                                        echo "Waktu Penyiraman Lama";
+                                                    }
+                                                    $simpan = new Simpan();
+                                                    $simpan->save($id_data, $hasil_defuzzy);
+                                                }
+                                                ?>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>

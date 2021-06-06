@@ -1,6 +1,6 @@
 <!-- Header -->
-<?php $page = "data_rule";
-$title = "Rule";
+<?php $page = "data_tanaman";
+$title = "Data Tanaman";
 include "layouts/header.php" ?>
 <!-- End of Header -->
 
@@ -27,7 +27,7 @@ include "layouts/header.php" ?>
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Data Rules / Aturan</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Data Tanaman</h1>
                     <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
                         For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
 
@@ -36,7 +36,21 @@ include "layouts/header.php" ?>
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
                             <div class="col_full float-right">
-                                <a class="btn btn-primary" href="tambah_rule.php">Tambah Rule</a>
+                                <?php
+                                require_once "koneksi.php";
+                                $query_suhu = "SELECT * FROM `data_suhu`";
+                                $result_suhu = mysqli_query($con, $query_suhu);
+                                $query_klbp_udara = "SELECT * FROM `data_klbp_udara`";
+                                $result_klbp_udara = mysqli_query($con, $query_klbp_udara);
+                                // Mengecek hasil dari id_data sudah terdapat di database
+                                if (mysqli_num_rows($result_suhu) > 0 && mysqli_num_rows($result_klbp_udara) > 0) {
+                                    while ($row = mysqli_fetch_array($result_suhu)) {
+                                        echo '<a class="btn btn-success" href="tambah_data_tanaman.php?edit=' . $row["id"] . '">Ubah Data</a>';
+                                    }
+                                } else {
+                                    echo '<a class="btn btn-primary mr-3" href="tambah_data_tanaman.php">Tambah Data</a>';
+                                }
+                                ?>
                             </div>
                         </div>
                         <div class="card-body">
@@ -44,27 +58,44 @@ include "layouts/header.php" ?>
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>IF</th>
-                                            <th>Suhu Udara</th>
-                                            <th>Kelembapan Udara</th>
-                                            <th>THEN</th>
-                                            <th class="text-center">Action</th>
+                                            <th class="text-center" width="33.3%">Suhu Udara Minimum</th>
+                                            <th class="text-center" width="33.3%">Suhu Udara Medium</th>
+                                            <th class="text-center" width="33.3%">Suhu Udara Maksimum</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         require_once "koneksi.php";
-                                        $sql_rule = mysqli_query($con, "SELECT * FROM `rule`") or die("Gagal " . mysqli_error($con));
-                                        while ($row = mysqli_fetch_array($sql_rule)) {
+                                        $sql_suhu = mysqli_query($con, "SELECT * FROM `data_suhu`") or die("Gagal " . mysqli_error($con));
+                                        while ($row = mysqli_fetch_array($sql_suhu)) {
                                         ?>
                                             <tr>
-                                                <td>IF</td>
-                                                <td>Suhu <?php echo $row['suhu']; ?></td>
-                                                <td>Kelembapan <?php echo $row['kelembapan']; ?></td>
-                                                <td><?php echo $row['hasil']; ?></td>
-                                                <td class="text-center"><a class="badge badge-success" href="tambah_rule.php?edit=<?= $row['id'] ?>">Edit</a> /
-                                                    <a class="badge badge-danger" href="action.php?action=delete-rule&id=<?= $row['id'] ?>">Delete</a>
-                                                </td>
+                                                <td class="text-center"><?php echo $row['suhu_min']; ?> &degC</td>
+                                                <td class="text-center"><?php echo $row['suhu_med']; ?> &degC</td>
+                                                <td class="text-center"><?php echo $row['suhu_max']; ?> &degC</td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center" width="33.3%">Kelemb. Udara Min</th>
+                                            <th class="text-center" width="33.3%">Kelemb. Udara Med</th>
+                                            <th class="text-center" width="33.3%">Kelemb. Udara Max</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        require_once "koneksi.php";
+                                        $sql_klbp = mysqli_query($con, "SELECT * FROM `data_klbp_udara`") or die("Gagal " . mysqli_error($con));
+                                        while ($row = mysqli_fetch_array($sql_klbp)) {
+                                        ?>
+                                            <tr>
+                                                <td class="text-center"><?php echo $row['klbp_min']; ?> %</td>
+                                                <td class="text-center"><?php echo $row['klbp_med']; ?> %</td>
+                                                <td class="text-center"><?php echo $row['klbp_max']; ?> %</td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>

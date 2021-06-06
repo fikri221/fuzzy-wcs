@@ -1,3 +1,62 @@
+<?php
+// require "fungsi_perhitungan.php";
+// require "mesin_inferensi.php";
+
+// require_once "koneksi.php";
+// $sql = "SELECT * FROM `data`";
+// $query = mysqli_query($con, $sql) or die("Gagal" . mysqli_error($con));
+// while ($row = mysqli_fetch_array($query)) {
+//     $suhu = $row['suhu'];
+//     $kelembapan = $row['kelembapan'];
+
+//     // Fuzzyfikasi dilakukan pada File 'fungsi_perhitungan.php'
+//     $hitung = new Fuzzyfikasi();
+//     $hasil = $hitung->hitung($suhu, $kelembapan);
+
+//     // Perhitungan Menggunakan Mesin Inferensi
+//     $inferensi = new Mesin_Inferensi();
+
+//     // Mengeluarkan Value Dari Array Multi
+//     $hasil_suhu = $hasil['suhu'];
+//     $hasil_kelembapan = $hasil['kelembapan'];
+
+//     $sql_rule = mysqli_query($con, "SELECT * FROM `rule`") or die("Gagal " . mysqli_error($con));
+//     while ($row = mysqli_fetch_array($sql_rule)) {
+
+//         $cari_min = array($hasil_suhu[$row['suhu']], $hasil_kelembapan[$row['kelembapan']]);
+
+//         $pred = 0;
+//         $hitung_total = 0;
+//         $hasil_hitung_cepat = 0;
+//         $hasil_hitung_normal = 0;
+//         $hasil_hitung_lama = 0;
+
+//         // Melakukan proses inferensi dengan fungsi masing-masing
+//         // Untuk kemudian dilakukan proses defuzzyfikasi
+//         if ($row['hasil'] == "cepat") {
+//             $inferensi_cepat = $inferensi->hasil_cepat($cari_min);
+//             $hitungan_cepat = min($cari_min) * $inferensi_cepat;
+//             $hasil_hitung_cepat += $hitungan_cepat;
+//             var_dump($hasil_hitung_cepat);
+//         } else if ($row['hasil'] == "normal") {
+//             $inferensi_normal = $inferensi->hasil_normal($cari_min);
+//             $hitungan_normal = min($cari_min) * $inferensi_normal;
+//             $hasil_hitung_normal += $hitungan_normal;
+//         } else {
+//             $inferensi_lama = $inferensi->hasil_lama($cari_min);
+//             $hitungan_lama = min($cari_min) * $inferensi_lama;
+//             $hasil_hitung_lama += $hitungan_lama;
+//         }
+
+//         $hitung_total += $hasil_hitung_cepat + $hasil_hitung_normal + $hasil_hitung_lama;
+//         $pred += min($cari_min);
+//         if ($hitung_total != 0 && $pred != 0) {
+//             $hasil_defuzzy = $hitung_total / $pred;
+//         }
+//     }
+// }
+?>
+
 <!-- Header -->
 <?php $page = "home";
 $title = "Dashboard";
@@ -5,6 +64,8 @@ include "layouts/header.php" ?>
 <!-- End of Header -->
 
 <body id="page-top">
+    <!-- Refresh page every 1 min -->
+    <meta http-equiv="refresh" content="60">
 
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -32,91 +93,108 @@ include "layouts/header.php" ?>
                     </div>
 
                     <!-- Content Row -->
-                    <?php
-                    require_once "koneksi.php";
-                    $sql = "SELECT * FROM `data` ORDER BY `tanggal` DESC LIMIT 1";
-                    $query = mysqli_query($con, $sql) or die("Gagal" . mysqli_error($con));
-                    while ($row = mysqli_fetch_array($query)) {
-                    ?>
-                        <div class="row">
+                    <div class="row">
+                        <div class="row col-xl-8 mr-4">
+                            <?php
+                            require_once "koneksi.php";
+                            $sql = "SELECT * FROM `data` ORDER BY `tanggal` DESC LIMIT 1";
 
-                            <!-- Suhu Card Example -->
-                            <div class="col-xl-3 col-md-6 mb-4">
-                                <div class="card border-left-primary shadow h-100 py-2">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                    Suhu</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $row['suhu'] ?>&deg Celcius</div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fas fa-temperature-high fa-2x text-primary"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Kadar pH Card Example -->
-                            <div class="col-xl-3 col-md-6 mb-4">
-                                <div class="card border-left-danger shadow h-100 py-2">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                                    Kadar pH</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $row['ph'] ?></div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fas fa-vial fa-2x text-danger"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Nutrisi Card Example -->
-                            <div class="col-xl-3 col-md-6 mb-4">
-                                <div class="card border-left-info shadow h-100 py-2">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Nutrisi
+                            $query = mysqli_query($con, $sql) or die("Gagal" . mysqli_error($con));
+                            while ($row = mysqli_fetch_array($query)) {
+                            ?>
+                                <!-- Suhu Card Example -->
+                                <div class="col-xl-6 col-md-6 mb-4">
+                                    <div class="card border-left-primary shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                        Suhu</div>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $row['suhu'] ?>&deg Celcius</div>
                                                 </div>
-                                                <div class="row no-gutters align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?= $row['nutrisi'] ?>%</div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-temperature-high fa-2x text-primary"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Kelembapan Card Example -->
+                                <div class="col-xl-6 col-md-6 mb-4">
+                                    <div class="card border-left-warning shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                        Kelembapan Udara</div>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $row['kelembapan'] ?>%</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-wind fa-2x text-warning"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Kelembapan Tanah Card Example -->
+                                <div class="col-xl-6 col-md-6 mb-4">
+                                    <div class="card border-left-info shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Kelembapan Tanah
+                                                    </div>
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col-auto">
+                                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">%</div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fas fa-clipboard-list fa-2x text-info"></i>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-icicles fa-2x text-info"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Kelembapan Card Example -->
-                            <div class="col-xl-3 col-md-6 mb-4">
-                                <div class="card border-left-warning shadow h-100 py-2">
+                            <?php } ?>
+                        </div>
+                        <div class="row col-xl-4">
+                            <!-- Earnings (Monthly) Card Example -->
+                            <div class="col-xl-12 col-md-6 mb-4">
+                                <div class="card shadow">
+                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                        <h6 class="m-0 font-weight-bold text-primary">Jadwal Penyiraman</h6>
+                                    </div>
                                     <div class="card-body">
                                         <div class="row no-gutters align-items-center">
+
+                                            <?php
+                                            require_once "koneksi.php";
+                                            $sql = "SELECT * FROM `jadwal_siram`";
+
+                                            $query = mysqli_query($con, $sql) or die("Gagal" . mysqli_error($con));
+                                            $row = mysqli_fetch_array($query);
+                                            ?>
                                             <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                    Kelembapan</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $row['kelembapan'] ?>%</div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fas fa-wind fa-2x text-warning"></i>
+                                                <?php if (!$row) : ?>
+                                                    <div class="text-center font-weight-bold text-gray-800 mt-2"><i class="far fa-clock fa-3x"></i></div>
+                                                    <div class="mt-4 text-center"><a class="btn btn-primary" href="tambah_jadwal.php">Tambah Jadwal</a></div>
+                                                <?php else : ?>
+                                                    <div class="h5 font-weight-bold text-gray-800 mb-3">Pagi &emsp;<?= date("H:i", strtotime($row['pagi'])) ?></div><br>
+                                                    <div class="h5 font-weight-bold text-gray-800">Sore &emsp;<?= date("H:i", strtotime($row['sore'])) ?></div>
+                                                    <div class="mt-3 text-center"><a class="btn btn-primary" href="tambah_jadwal.php?edit=<?= $row['id'] ?>">Edit Jadwal</a></div>
+                                                <?php endif ?>
+
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    <?php } ?>
+                    </div>
 
                     <div class="card shadow mb-4 my-5">
                         <div class="card-header py-3">
@@ -129,27 +207,42 @@ include "layouts/header.php" ?>
                                         <tr>
                                             <th>Tanggal</th>
                                             <th>Suhu</th>
-                                            <th>Kadar pH</th>
-                                            <th>Nutrisi</th>
                                             <th>Kelembapan</th>
-                                            <th>THEN</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         require_once "koneksi.php";
-                                        $sql_rule = mysqli_query($con, "SELECT * FROM `data` ORDER BY `tanggal` DESC") or die("Gagal " . mysqli_error($con));
-                                        while ($row = mysqli_fetch_array($sql_rule)) {
+                                        $sql_rule_siram = mysqli_query($con, "SELECT * FROM `jadwal_siram`") or die("Gagal " . mysqli_error($con));
+                                        while ($jam_siram = mysqli_fetch_array($sql_rule_siram)) {
+                                            $sql_rule = mysqli_query($con, "SELECT * FROM `data` ORDER BY `tanggal` DESC") or die("Gagal " . mysqli_error($con));
+                                            while ($row = mysqli_fetch_array($sql_rule)) {
+                                                if (
+                                                    date("H:i", strtotime($row['tanggal'])) >= date("H:i", strtotime($jam_siram['pagi'])) &&
+                                                    date("H:i", strtotime($row['tanggal'])) <= date("H:i", strtotime('+3 hours', strtotime($jam_siram['pagi']))) ||
+                                                    date("H:i", strtotime($row['tanggal'])) >= date("H:i", strtotime($jam_siram['sore'])) &&
+                                                    date("H:i", strtotime($row['tanggal'])) <= date("H:i", strtotime('+2 hours', strtotime($jam_siram['sore'])))
+                                                ) {
                                         ?>
-                                            <tr>
-                                                <td><a href="hasil.php?edit=<?= $row['id'] ?>"><?= date("j F Y, g:i a", strtotime($row['tanggal'])) ?></a></td>
-                                                <td><?= $row['suhu']; ?></td>
-                                                <td><?= $row['ph']; ?></td>
-                                                <td><?= $row['nutrisi']; ?>%</td>
-                                                <td><?= $row['kelembapan']; ?>%</td>
-                                                <td><?= $row['hasil']; ?></td>
-                                            </tr>
-                                        <?php } ?>
+                                                    <tr>
+                                                        <td><a href="hasil.php?edit=<?= $row['id'] ?>"><?= date("j F Y, H:i a", strtotime($row['tanggal'])) ?></a></td>
+                                                        <td><?= $row['suhu']; ?> &degC</td>
+                                                        <td><?= $row['kelembapan']; ?> %</td>
+                                                    </tr>
+                                        <?php
+                                                }
+                                            }
+                                        }
+                                        ?>
+
+                                        <?php
+                                        // require_once "koneksi.php";
+                                        // $sql_rule = mysqli_query($con, "SELECT data.*, hasil.hasil FROM `hasil` INNER JOIN `data` ON hasil.id_data=data.id ORDER BY `tanggal` DESC") or die("Gagal " . mysqli_error($con));
+                                        // while ($row = mysqli_fetch_array($sql_rule)) :
+                                        ?>
+
+                                        <?php // endwhile 
+                                        ?>
                                     </tbody>
                                 </table>
                             </div>

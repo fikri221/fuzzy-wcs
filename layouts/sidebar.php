@@ -23,7 +23,7 @@
 
     <!-- Heading -->
     <div class="sidebar-heading">
-        Rules
+        MENU
     </div>
 
     <!-- Nav Item - Pages Collapse Menu -->
@@ -31,6 +31,12 @@
         <a class="nav-link" href="data_rule.php">
             <i class="fas fa-fw fa-cog"></i>
             <span>Rules</span>
+        </a>
+    </li>
+    <li class="nav-item <?php echo ($page == "data_tanaman" ? "active" : "") ?>">
+        <a class="nav-link" href="data_tanaman.php">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Data Tanaman</span>
         </a>
     </li>
 

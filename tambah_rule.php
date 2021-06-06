@@ -1,5 +1,5 @@
 <!-- Header -->
-<?php $title = "Add New Rule";
+<?php $title = "Tambah Rule Baru";
 include "layouts/header.php" ?>
 <!-- End of Header -->
 
@@ -27,7 +27,7 @@ include "layouts/header.php" ?>
                     $suhu = $row['suhu'];
                     $ph = $row['ph'];
                     $nutrisi = $row['nutrisi'];
-                    $ketinggian_air = $row['ketinggian_air'];
+                    $kelembapan = $row['kelembapan'];
                     $hasil = $row['hasil'];
 
                     $link = "action.php?action=update-rule&id=" . $id;
@@ -37,7 +37,7 @@ include "layouts/header.php" ?>
                 $suhu = 0;
                 $ph = 0;
                 $nutrisi = 0;
-                $ketinggian_air = 0;
+                $kelembapan = 0;
                 $hasil = 0;
 
                 $link = "action.php?action=save-rule";
@@ -55,7 +55,7 @@ include "layouts/header.php" ?>
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Masukkan Rule / Aturan</h6>
                         </div>
                         <div class="card-body">
                             <form action="<?= $link ?>" method="POST">
@@ -112,20 +112,20 @@ include "layouts/header.php" ?>
                                         </select>
                                     </div>
                                     <div class="form-group col-md-2 mx-3">
-                                        <label for="">Ketinggian Air</label>
-                                        <select id="ketinggian_air" name="ketinggian_air" class="selectpicker show-tick form-control">
-                                            <option value="rendah" <?php $ketinggian1 = "rendah";
-                                                                    if ($ketinggian_air == $ketinggian1) {
+                                        <label for="">Kelembapan</label>
+                                        <select id="kelembapan" name="kelembapan" class="selectpicker show-tick form-control">
+                                            <option value="Basah" <?php $kelembapan1 = "Basah";
+                                                                    if ($kelembapan == $kelembapan1) {
                                                                         echo "selected";
-                                                                    } ?>>Rendah</option>
-                                            <option value="sedang" <?php $ketinggian2 = "sedang";
-                                                                    if ($ketinggian_air == $ketinggian2) {
+                                                                    } ?>>Basah</option>
+                                            <option value="sedang" <?php $kelembapan2 = "sedang";
+                                                                    if ($kelembapan == $kelembapan2) {
                                                                         echo "selected";
                                                                     } ?>>Sedang</option>
-                                            <option value="tinggi" <?php $ketinggian3 = "tinggi";
-                                                                    if ($ketinggian_air == $ketinggian3) {
+                                            <option value="kering" <?php $kelembapan3 = "kering";
+                                                                    if ($kelembapan == $kelembapan3) {
                                                                         echo "selected";
-                                                                    } ?>>Tinggi</option>
+                                                                    } ?>>Kering</option>
                                         </select>
                                     </div>
                                     <div class="form-group col-md-2 mx-3">
