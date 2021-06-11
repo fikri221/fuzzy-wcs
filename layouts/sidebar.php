@@ -35,8 +35,15 @@
     </li>
     <li class="nav-item <?php echo ($page == "data_tanaman" ? "active" : "") ?>">
         <a class="nav-link" href="data_tanaman.php">
-            <i class="fas fa-fw fa-cog"></i>
+            <i class="fas fa-fw fa-seedling"></i>
             <span>Data Tanaman</span>
+        </a>
+    </li>
+
+    <li class="nav-item <?php echo ($page == "data_hasil" ? "active" : "") ?>">
+        <a class="nav-link" href="data_hasil.php">
+            <i class="fas fa-fw fa-th-list"></i>
+            <span>Data Hasil</span>
         </a>
     </li>
 

@@ -1,9 +1,14 @@
 <?php
+// include "simpan_data.php";
 // require "fungsi_perhitungan.php";
 // require "mesin_inferensi.php";
 
 // require_once "koneksi.php";
-// $sql = "SELECT * FROM `data`";
+
+
+// // Mengambil id data yang akan dihitung
+// $id_data = $_GET['edit'];
+// $sql = "SELECT * FROM `data` WHERE id = $id_data";
 // $query = mysqli_query($con, $sql) or die("Gagal" . mysqli_error($con));
 // while ($row = mysqli_fetch_array($query)) {
 //     $suhu = $row['suhu'];
@@ -37,7 +42,6 @@
 //             $inferensi_cepat = $inferensi->hasil_cepat($cari_min);
 //             $hitungan_cepat = min($cari_min) * $inferensi_cepat;
 //             $hasil_hitung_cepat += $hitungan_cepat;
-//             var_dump($hasil_hitung_cepat);
 //         } else if ($row['hasil'] == "normal") {
 //             $inferensi_normal = $inferensi->hasil_normal($cari_min);
 //             $hitungan_normal = min($cari_min) * $inferensi_normal;
@@ -55,6 +59,12 @@
 //         }
 //     }
 // }
+?>
+
+<?php
+// $simpan = new Simpan();
+// $simpan->save($id_data, $hasil_defuzzy);
+// var_dump($simpan->save($id_data, $hasil_defuzzy));
 ?>
 
 <!-- Header -->
@@ -140,20 +150,47 @@ include "layouts/header.php" ?>
 
                                 <!-- Kelembapan Tanah Card Example -->
                                 <div class="col-xl-6 col-md-6 mb-4">
-                                    <div class="card border-left-info shadow h-100 py-2">
+                                    <div class="card border-left-danger shadow h-100 py-2">
                                         <div class="card-body">
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col mr-2">
-                                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Kelembapan Tanah
+                                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Kelembapan Tanah
                                                     </div>
                                                     <div class="row no-gutters align-items-center">
                                                         <div class="col-auto">
-                                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">%</div>
+                                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">68 %</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-auto">
-                                                    <i class="fas fa-icicles fa-2x text-info"></i>
+                                                    <i class="fas fa-icicles fa-2x text-danger"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Ketinggian Air Card Example -->
+                                <div class="col-xl-6 col-md-6 mb-4">
+                                    <div class="card border-left-info shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Ketinggian Air
+                                                    </div>
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col-auto">
+                                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">15 cm</div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="progress progress-sm mr-2">
+                                                                <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-ruler-vertical fa-2x text-info"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -161,6 +198,7 @@ include "layouts/header.php" ?>
                                 </div>
                             <?php } ?>
                         </div>
+
                         <div class="row col-xl-4">
                             <!-- Earnings (Monthly) Card Example -->
                             <div class="col-xl-12 col-md-6 mb-4">
@@ -183,9 +221,25 @@ include "layouts/header.php" ?>
                                                     <div class="text-center font-weight-bold text-gray-800 mt-2"><i class="far fa-clock fa-3x"></i></div>
                                                     <div class="mt-4 text-center"><a class="btn btn-primary" href="tambah_jadwal.php">Tambah Jadwal</a></div>
                                                 <?php else : ?>
-                                                    <div class="h5 font-weight-bold text-gray-800 mb-3">Pagi &emsp;<?= date("H:i", strtotime($row['pagi'])) ?></div><br>
-                                                    <div class="h5 font-weight-bold text-gray-800">Sore &emsp;<?= date("H:i", strtotime($row['sore'])) ?></div>
-                                                    <div class="mt-3 text-center"><a class="btn btn-primary" href="tambah_jadwal.php?edit=<?= $row['id'] ?>">Edit Jadwal</a></div>
+                                                    <table class="table table-borderless" id="dataTable" width="100%" cellspacing="0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-center">Kondisi</th>
+                                                                <th class="text-center">Waktu</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td style="color: black;" class="text-center"><strong>Pagi</strong></td>
+                                                                <td style="color: black;" class="text-center"><strong><?= date("H:i", strtotime($row['pagi'])) ?></strong></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="color: black;" class="text-center"><strong>Sore</strong></td>
+                                                                <td style="color: black;" class="text-center"><strong><?= date("H:i", strtotime($row['sore'])) ?></strong></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <div class="text-center"><a class="btn btn-primary" href="tambah_jadwal.php?edit=<?= $row['id'] ?>">Edit Jadwal</a></div>
                                                 <?php endif ?>
 
                                             </div>
@@ -198,7 +252,7 @@ include "layouts/header.php" ?>
 
                     <div class="card shadow mb-4 my-5">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Data Sensor</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -208,6 +262,7 @@ include "layouts/header.php" ?>
                                             <th>Tanggal</th>
                                             <th>Suhu</th>
                                             <th>Kelembapan</th>
+                                            <th>Hasil</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -228,6 +283,7 @@ include "layouts/header.php" ?>
                                                         <td><a href="hasil.php?edit=<?= $row['id'] ?>"><?= date("j F Y, H:i a", strtotime($row['tanggal'])) ?></a></td>
                                                         <td><?= $row['suhu']; ?> &degC</td>
                                                         <td><?= $row['kelembapan']; ?> %</td>
+                                                        <td><a class="badge badge-success" href="hasil.php?edit=<?= $row['id'] ?>">Lihat Hasil</a></td>
                                                     </tr>
                                         <?php
                                                 }
@@ -235,14 +291,6 @@ include "layouts/header.php" ?>
                                         }
                                         ?>
 
-                                        <?php
-                                        // require_once "koneksi.php";
-                                        // $sql_rule = mysqli_query($con, "SELECT data.*, hasil.hasil FROM `hasil` INNER JOIN `data` ON hasil.id_data=data.id ORDER BY `tanggal` DESC") or die("Gagal " . mysqli_error($con));
-                                        // while ($row = mysqli_fetch_array($sql_rule)) :
-                                        ?>
-
-                                        <?php // endwhile 
-                                        ?>
                                     </tbody>
                                 </table>
                             </div>

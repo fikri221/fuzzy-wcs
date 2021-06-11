@@ -1,6 +1,6 @@
 <!-- Header -->
-<?php $page = "data_rule";
-$title = "Rule";
+<?php $page = "data_hasil";
+$title = "Data Hasil";
 include "layouts/header.php" ?>
 <!-- End of Header -->
 
@@ -27,48 +27,41 @@ include "layouts/header.php" ?>
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Data Rules / Aturan</h1>
-                    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-                        For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Data Hasil</h1>
+                    <p class="mb-4">Data hasil yang telah disimpan kedalam database.</p>
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-                            <div class="col_full float-right">
-                                <a class="btn btn-primary" href="tambah_rule.php">Tambah Rule</a>
-                            </div>
+                            <h6 class="m-0 font-weight-bold text-primary">Data Hasil</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>IF</th>
-                                            <th>Suhu Udara</th>
-                                            <th>Kelembapan Udara</th>
-                                            <th>Kelembapan Tanah</th>
-                                            <th>THEN</th>
-                                            <th class="text-center">Action</th>
+                                            <th>Tanggal</th>
+                                            <th>Suhu</th>
+                                            <th>Kelembapan</th>
+                                            <th>Hasil</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         require_once "koneksi.php";
-                                        $sql_rule = mysqli_query($con, "SELECT * FROM `rule`") or die("Gagal " . mysqli_error($con));
-                                        while ($row = mysqli_fetch_array($sql_rule)) {
+                                        $sql_data = mysqli_query($con, "SELECT hasil.hasil, data.suhu, data.kelembapan, data.tanggal FROM hasil INNER JOIN data ON hasil.id_data = data.id ORDER BY data.tanggal DESC") or die("Gagal " . mysqli_error($con));
+                                        while ($row = mysqli_fetch_array($sql_data)) {
                                         ?>
                                             <tr>
-                                                <td>IF</td>
-                                                <td>Suhu <?php echo $row['suhu']; ?></td>
-                                                <td>Kelembapan Udara <?php echo $row['kelembapan']; ?></td>
-                                                <td>kelembapan Tanah <?php echo $row['kelembapan_tanah']; ?></td>
-                                                <td><?php echo $row['hasil']; ?></td>
-                                                <td class="text-center"><a class="badge badge-success" href="tambah_rule.php?edit=<?= $row['id'] ?>">Edit</a> /
-                                                    <a class="badge badge-danger" href="action.php?action=delete-rule&id=<?= $row['id'] ?>">Delete</a>
-                                                </td>
+                                                <td><a href="hasil.php?edit=<?= $row['id'] ?>"><?= date("j F Y, H:i a", strtotime($row['tanggal'])) ?></a></td>
+                                                <td><?= $row['suhu']; ?> &degC</td>
+                                                <td><?= $row['kelembapan']; ?> %</td>
+                                                <td><?= $row['hasil'] ?></td>
                                             </tr>
-                                        <?php } ?>
+                                        <?php
+                                        }
+                                        ?>
+
                                     </tbody>
                                 </table>
                             </div>

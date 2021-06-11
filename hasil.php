@@ -5,7 +5,7 @@ include "layouts/header.php" ?>
 
 <?php
 // Panggil koneksi.php
-require_once "koneksi.php";
+require "koneksi.php";
 
 // Mengambil id data yang akan dihitung
 $id_data = $_GET['edit'];
@@ -17,23 +17,38 @@ while ($row = mysqli_fetch_array($query)) {
 }
 
 include "simpan_data.php";
-require "get_data.php";
 require "fungsi_perhitungan.php";
 require "mesin_inferensi.php";
 
 // Menentukan nilai suhu min, med dan max
-$get_suhu = get_suhu();
+$sql_suhu = "SELECT * FROM `data_suhu`";
+$query_suhu = mysqli_query($con, $sql_suhu) or die("Gagal" . mysqli_error($con));
+while ($row_suhu = mysqli_fetch_array($query_suhu)) {
+    $suhu_min = $row_suhu['suhu_min'];
+    $suhu_medB = $row_suhu['suhu_med'];
+    $suhu_max = $row_suhu['suhu_max'];
+}
+$suhu_medA = ($suhu_min + $suhu_medB) / 2;
+$suhu_medC = ($suhu_medB + $suhu_max) / 2;
 
 // Menentukan nilai kelemb. udara min, med dan max
-$get_klb_udara = get_klb_udara();
+$sql_klbp_udara = "SELECT * FROM `data_klbp_udara`";
+$query_klbp_udara = mysqli_query($con, $sql_klbp_udara) or die("Gagal" . mysqli_error($con));
+while ($row_klbp_udara = mysqli_fetch_array($query_klbp_udara)) {
+    $klbp_udara_min = $row_klbp_udara['klbp_min'];
+    $klbp_udara_medB = $row_klbp_udara['klbp_med'];
+    $klbp_udara_max = $row_klbp_udara['klbp_max'];
+}
+$klbp_udara_medA = ($klbp_udara_min + $klbp_udara_medB) / 2;
+$klbp_udara_medC = ($klbp_udara_medB + $klbp_udara_max) / 2;
 
 // Menentukan nilai minimum dan maksimum suhu
 $nilai_suhu = new Suhu(
-    $get_suhu['min'],
-    $get_suhu['medA'],
-    $get_suhu['medB'],
-    $get_suhu['medC'],
-    $get_suhu['max']
+    $suhu_min,
+    $suhu_medA,
+    $suhu_medB,
+    $suhu_medC,
+    $suhu_max
 );
 $min_suhu = $nilai_suhu->min_suhu;
 $medA_suhu = $nilai_suhu->medA_suhu;
@@ -43,11 +58,11 @@ $max_suhu = $nilai_suhu->max_suhu;
 
 // Menentukan nilai minimum dan maksimum kelembapan air
 $nilai_kelembapan = new Kelembapan(
-    $get_klb_udara['min'],
-    $get_klb_udara['medA'],
-    $get_klb_udara['medB'],
-    $get_klb_udara['medC'],
-    $get_klb_udara['max']
+    $klbp_udara_min,
+    $klbp_udara_medA,
+    $klbp_udara_medB,
+    $klbp_udara_medC,
+    $klbp_udara_max
 );
 $min_kelembapan = $nilai_kelembapan->min_kelembapan;
 $medA_kelembapan = $nilai_kelembapan->medA_kelembapan;
@@ -343,6 +358,7 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                     </thead>
                                     <tbody>
                                         <?php
+                                        
                                         require_once "koneksi.php";
                                         $pred = 0;
                                         $hitung_total = 0;
@@ -380,6 +396,8 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                                     if ($hasil_defuzzy >= 8) {
                                                         echo "Waktu Penyiraman Lama";
                                                     }
+                                                    $redirect_page = "http://localhost/native/fuzzy-wcs/data_hasil.php";
+                                                    header('Location: ' . $redirect_page);
                                                 } else {
                                                     echo round($hitung_total, 3) . ' / ' . $pred . " = " . $hasil_defuzzy;
                                                     if ($hasil_defuzzy >= 8) {
@@ -387,6 +405,8 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                                     }
                                                     $simpan = new Simpan();
                                                     $simpan->save($id_data, $hasil_defuzzy);
+                                                    $redirect_page = "http://localhost/native/fuzzy-wcs/data_hasil.php";
+                                                    header('Location: ' . $redirect_page);
                                                 }
                                                 ?>
                                             </td>

@@ -24,6 +24,7 @@ include "layouts/header.php" ?>
                 require_once "koneksi.php";
                 $sql_suhu = mysqli_query($con, "SELECT * FROM `data_suhu` WHERE `id`='$id'");
                 $sql_klbp_udara = mysqli_query($con, "SELECT * FROM `data_klbp_udara` WHERE `id`='$id'");
+                $sql_siram = mysqli_query($con, "SELECT * FROM `data_siram` WHERE `id`='$id'");
                 if ($row_suhu = mysqli_fetch_array($sql_suhu)) {
                     $suhu_min = $row_suhu['suhu_min'];
                     $suhu_med = $row_suhu['suhu_med'];
@@ -38,6 +39,13 @@ include "layouts/header.php" ?>
 
                     $link = "action.php?action=update-data-tanaman&id=" . $id;
                 }
+                if ($row_siram = mysqli_fetch_array($sql_siram)) {
+                    $siram_min = $row_siram['siram_min'];
+                    $siram_med = $row_siram['siram_med'];
+                    $siram_max = $row_siram['siram_max'];
+
+                    $link = "action.php?action=update-data-tanaman&id=" . $id;
+                }
             } else {
                 // Jika Input Data Baru
                 $suhu_min = 0;
@@ -47,6 +55,10 @@ include "layouts/header.php" ?>
                 $klbp_min = 0;
                 $klbp_med = 0;
                 $klbp_max = 0;
+
+                $siram_min = 0;
+                $siram_med = 0;
+                $siram_max = 0;
 
                 $link = "action.php?action=save-data-tanaman";
             }
@@ -94,6 +106,21 @@ include "layouts/header.php" ?>
                                     <div class="form-group col-md-4">
                                         <label for="">Kelembapan Udara Maksimum (%)</label>
                                         <input type="number" class="form-control" id="klbp_max" name="klbp_max" placeholder="0" value="<?= $klbp_max ?>">
+                                    </div>
+                                </div>
+
+                                <div class="form-row mt-3">
+                                    <div class="form-group col-md-4">
+                                        <label for="">Lama Siram Minimum (Detik)</label>
+                                        <input type="number" class="form-control" id="siram_min" name="siram_min" placeholder="0" value="<?= $siram_min ?>">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="">Lama Siram Medium (Detik)</label>
+                                        <input type="number" class="form-control" id="siram_med" name="siram_med" placeholder="0" value="<?= $siram_med ?>">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="">Lama Siram Maksimum (Detik)</label>
+                                        <input type="number" class="form-control" id="siram_max" name="siram_max" placeholder="0" value="<?= $siram_max ?>">
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary font-weight-bold mx-3 my-3">SUBMIT</button>

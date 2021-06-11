@@ -6,7 +6,7 @@ class Simpan
         require_once "koneksi.php";
         global $con;
 
-        $query = mysqli_query($con, "INSERT INTO `hasil`(`id`,`id_data`,`hasil`) VALUES ('NULL','$id_data','$hasil')");
+        $query = mysqli_query($con, "INSERT INTO `hasil`(`id_data`,`hasil`) VALUES ('$id_data','$hasil')");
         return $query;
     }
 }

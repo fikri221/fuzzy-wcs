@@ -28,13 +28,12 @@ include "layouts/header.php" ?>
 
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800">Data Tanaman</h1>
-                    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-                        For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
+                    <p class="mb-4">Data yang dibutuhkan logika fuzzy sebagai variabel minimum, medium dan maksimum untuk dilakukan perhitungan.</p>
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Data Tanaman</h6>
                             <div class="col_full float-right">
                                 <?php
                                 require_once "koneksi.php";
@@ -96,6 +95,29 @@ include "layouts/header.php" ?>
                                                 <td class="text-center"><?php echo $row['klbp_min']; ?> %</td>
                                                 <td class="text-center"><?php echo $row['klbp_med']; ?> %</td>
                                                 <td class="text-center"><?php echo $row['klbp_max']; ?> %</td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center" width="33.3%">Lama Siram Min</th>
+                                            <th class="text-center" width="33.3%">Lama Siram Med</th>
+                                            <th class="text-center" width="33.3%">Lama Siram Max</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        require_once "koneksi.php";
+                                        $sql_siram = mysqli_query($con, "SELECT * FROM `data_siram`") or die("Gagal " . mysqli_error($con));
+                                        while ($row = mysqli_fetch_array($sql_siram)) {
+                                        ?>
+                                            <tr>
+                                                <td class="text-center"><?php echo $row['siram_min']; ?> detik</td>
+                                                <td class="text-center"><?php echo $row['siram_med']; ?> detik</td>
+                                                <td class="text-center"><?php echo $row['siram_max']; ?> detik</td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>

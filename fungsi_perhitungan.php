@@ -40,21 +40,36 @@ class Fuzzyfikasi
     function hitung($nilai_suhu, $nilai_kelembapan)
     {
         require "koneksi.php";
-        require "get_data.php";
 
         // Menentukan nilai suhu min, med dan max
-        $get_suhu = get_suhu();
+        $sql_suhu = "SELECT * FROM `data_suhu`";
+        $query_suhu = mysqli_query($con, $sql_suhu) or die("Gagal" . mysqli_error($con));
+        while ($row_suhu = mysqli_fetch_array($query_suhu)) {
+            $suhu_min = $row_suhu['suhu_min'];
+            $suhu_medB = $row_suhu['suhu_med'];
+            $suhu_max = $row_suhu['suhu_max'];
+        }
+        $suhu_medA = ($suhu_min + $suhu_medB) / 2;
+        $suhu_medC = ($suhu_medB + $suhu_max) / 2;
 
         // Menentukan nilai kelemb. udara min, med dan max
-        $get_klb_udara = get_klb_udara();
+        $sql_klbp_udara = "SELECT * FROM `data_klbp_udara`";
+        $query_klbp_udara = mysqli_query($con, $sql_klbp_udara) or die("Gagal" . mysqli_error($con));
+        while ($row_klbp_udara = mysqli_fetch_array($query_klbp_udara)) {
+            $klbp_udara_min = $row_klbp_udara['klbp_min'];
+            $klbp_udara_medB = $row_klbp_udara['klbp_med'];
+            $klbp_udara_max = $row_klbp_udara['klbp_max'];
+        }
+        $klbp_udara_medA = ($klbp_udara_min + $klbp_udara_medB) / 2;
+        $klbp_udara_medC = ($klbp_udara_medB + $klbp_udara_max) / 2;
 
-        $suhu['rendah'] = $this->rendah($nilai_suhu, $get_suhu['min'], $get_suhu['medB']);
-        $suhu['sedang'] = $this->sedang($nilai_suhu, $get_suhu['medA'], $get_suhu['medB'], $get_suhu['medC']);
-        $suhu['tinggi'] = $this->tinggi($nilai_suhu, $get_suhu['medB'], $get_suhu['max']);
+        $suhu['rendah'] = $this->rendah($nilai_suhu, $suhu_min, $suhu_medB);
+        $suhu['sedang'] = $this->sedang($nilai_suhu, $suhu_medA, $suhu_medB, $suhu_medC);
+        $suhu['tinggi'] = $this->tinggi($nilai_suhu, $suhu_medB, $suhu_max);
 
-        $kelembapan['kering'] = $this->rendah($nilai_kelembapan, $get_klb_udara['min'], $get_klb_udara['medB']);
-        $kelembapan['sedang'] = $this->sedang($nilai_kelembapan, $get_klb_udara['medA'], $get_klb_udara['medB'], $get_klb_udara['medC']);
-        $kelembapan['basah'] = $this->tinggi($nilai_kelembapan, $get_klb_udara['medB'], $get_klb_udara['max']);
+        $kelembapan['kering'] = $this->rendah($nilai_kelembapan, $klbp_udara_min, $klbp_udara_medB);
+        $kelembapan['sedang'] = $this->sedang($nilai_kelembapan, $klbp_udara_medA, $klbp_udara_medB, $klbp_udara_medC);
+        $kelembapan['basah'] = $this->tinggi($nilai_kelembapan, $klbp_udara_medB, $klbp_udara_max);
 
         $hasil = array(
             "suhu" => $suhu,

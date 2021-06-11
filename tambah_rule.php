@@ -25,9 +25,8 @@ include "layouts/header.php" ?>
                 $sql = mysqli_query($con, "SELECT * FROM `rule` WHERE `id`='$id'");
                 if ($row = mysqli_fetch_array($sql)) {
                     $suhu = $row['suhu'];
-                    $ph = $row['ph'];
-                    $nutrisi = $row['nutrisi'];
                     $kelembapan = $row['kelembapan'];
+                    $kelembapan_tanah = $row['kelembapan_tanah'];
                     $hasil = $row['hasil'];
 
                     $link = "action.php?action=update-rule&id=" . $id;
@@ -35,9 +34,8 @@ include "layouts/header.php" ?>
             } else {
                 // Jika Input Data Baru
                 $suhu = 0;
-                $ph = 0;
-                $nutrisi = 0;
                 $kelembapan = 0;
+                $kelembapan_tanah = 0;
                 $hasil = 0;
 
                 $link = "action.php?action=save-rule";
@@ -60,7 +58,7 @@ include "layouts/header.php" ?>
                         <div class="card-body">
                             <form action="<?= $link ?>" method="POST">
                                 <div class="form-row">
-                                    <div class="form-group col-md-2 mx-3">
+                                    <div class="form-group col-md-3">
                                         <label for="">Suhu</label>
                                         <select id="suhu" name="suhu" class="selectpicker show-tick form-control">
                                             <option value="rendah" <?php $suhu1 = "rendah";
@@ -77,41 +75,7 @@ include "layouts/header.php" ?>
                                                                     } ?>>Tinggi</option>
                                         </select>
                                     </div>
-                                    <div class="form-group col-md-2 mx-3">
-                                        <label for="">Kadar pH</label>
-                                        <select id="ph" name="ph" class="selectpicker show-tick form-control">
-                                            <option value="rendah" <?php $ph1 = "rendah";
-                                                                    if ($ph == $ph1) {
-                                                                        echo "selected";
-                                                                    } ?>>Rendah</option>
-                                            <option value="sedang" <?php $ph2 = "sedang";
-                                                                    if ($ph == $ph2) {
-                                                                        echo "selected";
-                                                                    } ?>>Sedang</option>
-                                            <option value="tinggi" <?php $ph3 = "tinggi";
-                                                                    if ($ph == $ph3) {
-                                                                        echo "selected";
-                                                                    } ?>>Tinggi</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-md-2 mx-3">
-                                        <label for="">Nutrisi</label>
-                                        <select id="nutrisi" name="nutrisi" class="selectpicker show-tick form-control">
-                                            <option value="rendah" <?php $nutrisi1 = "rendah";
-                                                                    if ($nutrisi == $nutrisi1) {
-                                                                        echo "selected";
-                                                                    } ?>>Rendah</option>
-                                            <option value="sedang" <?php $nutrisi2 = "sedang";
-                                                                    if ($nutrisi == $nutrisi2) {
-                                                                        echo "selected";
-                                                                    } ?>>Sedang</option>
-                                            <option value="tinggi" <?php $nutrisi3 = "tinggi";
-                                                                    if ($nutrisi == $nutrisi3) {
-                                                                        echo "selected";
-                                                                    } ?>>Tinggi</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-md-2 mx-3">
+                                    <div class="form-group col-md-3">
                                         <label for="">Kelembapan</label>
                                         <select id="kelembapan" name="kelembapan" class="selectpicker show-tick form-control">
                                             <option value="Basah" <?php $kelembapan1 = "Basah";
@@ -128,7 +92,24 @@ include "layouts/header.php" ?>
                                                                     } ?>>Kering</option>
                                         </select>
                                     </div>
-                                    <div class="form-group col-md-2 mx-3">
+                                    <div class="form-group col-md-3">
+                                        <label for="">Kelembapan Tanah</label>
+                                        <select id="kelembapan_tanah" name="kelembapan_tanah" class="selectpicker show-tick form-control">
+                                            <option value="rendah" <?php $klbp_tnh1 = "rendah";
+                                                                    if ($kelembapan_tanah == $klbp_tnh1) {
+                                                                        echo "selected";
+                                                                    } ?>>Rendah</option>
+                                            <option value="sedang" <?php $klbp_tnh2 = "sedang";
+                                                                    if ($kelembapan_tanah == $klbp_tnh2) {
+                                                                        echo "selected";
+                                                                    } ?>>Sedang</option>
+                                            <option value="tinggi" <?php $klbp_tnh3 = "tinggi";
+                                                                    if ($kelembapan_tanah == $klbp_tnh3) {
+                                                                        echo "selected";
+                                                                    } ?>>Tinggi</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-3">
                                         <label for="">Then</label>
                                         <select id="hasil" name="hasil" class="selectpicker show-tick form-control">
                                             <option value="cepat" <?php $hasil1 = "cepat";
