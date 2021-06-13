@@ -1,6 +1,8 @@
 <!-- Header -->
-<?php $title = "Dashboard";
-include "layouts/header.php" ?>
+<?php
+$title = "Dashboard";
+include "layouts/header.php";
+?>
 <!-- End of Header -->
 
 <?php
@@ -358,7 +360,7 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                     </thead>
                                     <tbody>
                                         <?php
-                                        
+
                                         require_once "koneksi.php";
                                         $pred = 0;
                                         $hitung_total = 0;
@@ -379,6 +381,7 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                                 $hasil_hitung_lama += $hitungan_lama;
                                             }
                                             $hitung_total = $hasil_hitung_cepat + $hasil_hitung_normal + $hasil_hitung_lama;
+                                            var_dump($hitung_total);
                                             $pred += min($cari_min);
                                             if ($hitung_total != 0 && $pred != 0) {
                                                 $hasil_defuzzy = $hitung_total / $pred . "<br>";
@@ -386,27 +389,17 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                         }
                                         ?>
                                         <tr>
-                                            <td>
+                                            <td class="text-center">
                                                 <?php
                                                 $query = "SELECT `id_data` FROM `hasil` WHERE `id_data` = '$id_data'";
                                                 $result = mysqli_query($con, $query);
                                                 // Mengecek hasil dari id_data sudah terdapat di database
                                                 if (mysqli_num_rows($result) > 0) {
                                                     echo round($hitung_total, 3) . ' / ' . $pred . " = " . $hasil_defuzzy;
-                                                    if ($hasil_defuzzy >= 8) {
-                                                        echo "Waktu Penyiraman Lama";
-                                                    }
-                                                    $redirect_page = "http://localhost/native/fuzzy-wcs/data_hasil.php";
-                                                    header('Location: ' . $redirect_page);
                                                 } else {
                                                     echo round($hitung_total, 3) . ' / ' . $pred . " = " . $hasil_defuzzy;
-                                                    if ($hasil_defuzzy >= 8) {
-                                                        echo "Waktu Penyiraman Lama";
-                                                    }
                                                     $simpan = new Simpan();
                                                     $simpan->save($id_data, $hasil_defuzzy);
-                                                    $redirect_page = "http://localhost/native/fuzzy-wcs/data_hasil.php";
-                                                    header('Location: ' . $redirect_page);
                                                 }
                                                 ?>
                                             </td>

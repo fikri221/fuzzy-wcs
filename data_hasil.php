@@ -1,7 +1,9 @@
 <!-- Header -->
-<?php $page = "data_hasil";
+<?php 
+$page = "data_hasil";
 $title = "Data Hasil";
-include "layouts/header.php" ?>
+include "layouts/header.php";
+?>
 <!-- End of Header -->
 
 <body id="page-top">
@@ -49,11 +51,11 @@ include "layouts/header.php" ?>
                                     <tbody>
                                         <?php
                                         require_once "koneksi.php";
-                                        $sql_data = mysqli_query($con, "SELECT hasil.hasil, data.suhu, data.kelembapan, data.tanggal FROM hasil INNER JOIN data ON hasil.id_data = data.id ORDER BY data.tanggal DESC") or die("Gagal " . mysqli_error($con));
+                                        $sql_data = mysqli_query($con, "SELECT hasil.hasil, data.id, data.suhu, data.kelembapan, data.tanggal FROM hasil INNER JOIN data ON hasil.id_data = data.id ORDER BY data.tanggal DESC") or die("Gagal " . mysqli_error($con));
                                         while ($row = mysqli_fetch_array($sql_data)) {
                                         ?>
                                             <tr>
-                                                <td><a href="hasil.php?edit=<?= $row['id'] ?>"><?= date("j F Y, H:i a", strtotime($row['tanggal'])) ?></a></td>
+                                                <td><a href="formula_hasil.php?edit=<?= $row['id'] ?>"><?= date("j F Y, H:i a", strtotime($row['tanggal'])) ?></a></td>
                                                 <td><?= $row['suhu']; ?> &degC</td>
                                                 <td><?= $row['kelembapan']; ?> %</td>
                                                 <td><?= $row['hasil'] ?></td>
@@ -90,23 +92,7 @@ include "layouts/header.php" ?>
     </a>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?php include "layouts/logout_modal.php" ?>
 
     <!-- Scripts -->
     <?php include "layouts/scripts.php" ?>

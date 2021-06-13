@@ -1,7 +1,9 @@
 <!-- Header -->
-<?php $page = "data_tanaman";
+<?php 
+$page = "data_tanaman";
 $title = "Data Tanaman";
-include "layouts/header.php" ?>
+include "layouts/header.php";
+?>
 <!-- End of Header -->
 
 <body id="page-top">
@@ -57,9 +59,9 @@ include "layouts/header.php" ?>
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th class="text-center" width="33.3%">Suhu Udara Minimum</th>
-                                            <th class="text-center" width="33.3%">Suhu Udara Medium</th>
-                                            <th class="text-center" width="33.3%">Suhu Udara Maksimum</th>
+                                            <th class="text-center" width="33.3%">Suhu Udara Min</th>
+                                            <th class="text-center" width="33.3%">Suhu Udara Med</th>
+                                            <th class="text-center" width="33.3%">Suhu Udara Max</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -148,23 +150,7 @@ include "layouts/header.php" ?>
     </a>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?php include "layouts/logout_modal.php" ?>
 
     <!-- Scripts -->
     <?php include "layouts/scripts.php" ?>
