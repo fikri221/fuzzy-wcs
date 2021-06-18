@@ -17,6 +17,7 @@ class Mesin_Inferensi
         $var2 = $siram_medB - $siram_min;
         $hitung_kiri1 = min($nilai_min) * $var2;
         $hitung_kiri2 = ($hitung_kiri1 - $siram_medB) / -1;
+        var_dump($hitung_kiri2);
         $hasil_cepat = $hitung_kiri2;
         return $hasil_cepat;
     }

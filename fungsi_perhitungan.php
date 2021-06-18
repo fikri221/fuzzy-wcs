@@ -93,13 +93,13 @@ class Fuzzyfikasi
 
     function sedang($nilai, $medA, $medB, $medC)
     {
-        if ($nilai <= $medA && $nilai >= $medC) {
+        if ($nilai <= $medA || $nilai >= $medC) {
             return 0;
         } elseif ($medA <= $nilai && $nilai <= $medB) {
             $hasil = ($nilai - $medA) / ($medB - $medA);
             return $hasil;
         } elseif ($medB <= $nilai && $nilai <= $medC) {
-            $hasil = ($medB - $nilai) / ($medC - $medB);
+            $hasil = ($medC - $nilai) / ($medC - $medB);
             return $hasil;
         }
     }

@@ -381,7 +381,6 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                                 $hasil_hitung_lama += $hitungan_lama;
                                             }
                                             $hitung_total = $hasil_hitung_cepat + $hasil_hitung_normal + $hasil_hitung_lama;
-                                            var_dump($hitung_total);
                                             $pred += min($cari_min);
                                             if ($hitung_total != 0 && $pred != 0) {
                                                 $hasil_defuzzy = $hitung_total / $pred . "<br>";

@@ -226,7 +226,7 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                                 <?php
                                                 if ($hasil_suhu['sedang'] > 0 && $medB_suhu <= $suhu && $suhu <= $medC_suhu) {
                                                     echo $medB_suhu . " ≤ " . $suhu . " ≤ " . $medC_suhu . "<br>";
-                                                    echo "( " . $medB_suhu . " - " . $suhu . " )" . " / " . "( " . $medC_suhu . " - " . $medB_suhu . " )";
+                                                    echo "( " . $medC_suhu . " - " . $suhu . " )" . " / " . "( " . $medC_suhu . " - " . $medB_suhu . " )";
                                                 }
                                                 ?>
                                             </td>
@@ -310,25 +310,33 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                                 <td>
                                                     <?= $row['hasil']; ?> (<?= (min($cari_min) === NULL) ? 0 : min($cari_min) ?>) <br>
                                                     <?php
+                                                    $sql_siram = mysqli_query($con, "SELECT * FROM `data_siram`") or die("Gagal " . mysqli_error($con));
+                                                    while ($row_siram = mysqli_fetch_array($sql_siram)) {
+                                                        $siram_min = $row_siram['siram_min'];
+                                                        $siram_medB = $row_siram['siram_med'];
+                                                        $siram_max = $row_siram['siram_max'];
+                                                    }
+                                                    $siram_medA = ($siram_min + $siram_medB) / 2;
+                                                    $siram_medC = ($siram_medB + $siram_max) / 2;
+
+                                                    $cari_min = array($hasil_suhu[$row['suhu']], $hasil_kelembapan[$row['kelembapan']]);
                                                     if ($row['hasil'] == "cepat") {
+                                                        $var2 = $siram_medB - $siram_min;
                                                         echo "α-predikat" . $row['id'] . " = " . min($cari_min) . "<br>";
-                                                        $var1 = 8;
-                                                        echo "z" . $row['id'] . ": " . min($cari_min) . " = " . "($var1 - z" . $row['id'] .
+                                                        echo "z" . $row['id'] . ": " . min($cari_min) . " = " . "($siram_medB - z" . $row['id'] .
                                                             ")" . " / " . "($var2)" . "<br>";
                                                         echo round($inferensi->hasil_cepat($cari_min), 3);
                                                     } else if ($row['hasil'] == "normal") {
-                                                        $var1 = 5;
-                                                        $var2 = 8 - 5;
+                                                        $var2 = $siram_medB - $siram_medA;
                                                         echo "α-predikat" . $row['id'] . " = " . (min($cari_min) === NULL) ? "α-predikat" . $row['id'] . " = " . '0' . '<br>' : min($cari_min) . "<br>";
-                                                        echo "z" . $row['id'] . ": " . (min($cari_min) === NULL) ? "z" . $row['id'] . ": " . '0' . " = " . "(z" . $row['id'] .  " - $var1)" .
-                                                            " / " . "($var2)" . "<br>" : min($cari_min) . " = " . "(z" . $row['id'] .  " - $var1)" .
+                                                        echo "z" . $row['id'] . ": " . (min($cari_min) === NULL) ? "z" . $row['id'] . ": " . '0' . " = " . "(z" . $row['id'] .  " - $siram_medA)" .
+                                                            " / " . "($var2)" . "<br>" : min($cari_min) . " = " . "(z" . $row['id'] .  " - $siram_medA)" .
                                                             " / " . "($var2)" . "<br>";
                                                         echo round($inferensi->hasil_normal($cari_min), 3);
                                                     } else {
-                                                        $var1 = 15;
-                                                        $var2 = 15 - 8;
+                                                        $var2 = $siram_max - $siram_medB;
                                                         echo "α-predikat" . $row['id'] . " = " . min($cari_min) . "<br>";
-                                                        echo "z" . $row['id'] . ": " . min($cari_min) . " = " . "($var1 - z" . $row['id'] .
+                                                        echo "z" . $row['id'] . ": " . min($cari_min) . " = " . "($siram_max - z" . $row['id'] .
                                                             ")" . " / " . "($var2)" . "<br>";
                                                         echo round($inferensi->hasil_lama($cari_min), 3);
                                                     }
@@ -358,7 +366,7 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                     </thead>
                                     <tbody>
                                         <?php
-                                        
+
                                         require_once "koneksi.php";
                                         $pred = 0;
                                         $hitung_total = 0;
@@ -386,27 +394,21 @@ $hasil_kelembapan = $hasil['kelembapan'];
                                         }
                                         ?>
                                         <tr>
-                                            <td>
+                                            <td class="text-center">
                                                 <?php
                                                 $query = "SELECT `id_data` FROM `hasil` WHERE `id_data` = '$id_data'";
                                                 $result = mysqli_query($con, $query);
                                                 // Mengecek hasil dari id_data sudah terdapat di database
                                                 if (mysqli_num_rows($result) > 0) {
                                                     echo round($hitung_total, 3) . ' / ' . $pred . " = " . $hasil_defuzzy;
-                                                    if ($hasil_defuzzy >= 8) {
-                                                        echo "Waktu Penyiraman Lama";
-                                                    }
-                                                    $redirect_page = "http://localhost/native/fuzzy-wcs/data_hasil.php";
-                                                    header('Location: ' . $redirect_page);
+                                                    // $redirect_page = "http://localhost/native/fuzzy-wcs/data_hasil.php";
+                                                    // header('Location: ' . $redirect_page);
                                                 } else {
                                                     echo round($hitung_total, 3) . ' / ' . $pred . " = " . $hasil_defuzzy;
-                                                    if ($hasil_defuzzy >= 8) {
-                                                        echo "Waktu Penyiraman Lama";
-                                                    }
                                                     $simpan = new Simpan();
                                                     $simpan->save($id_data, $hasil_defuzzy);
-                                                    $redirect_page = "http://localhost/native/fuzzy-wcs/data_hasil.php";
-                                                    header('Location: ' . $redirect_page);
+                                                    // $redirect_page = "http://localhost/native/fuzzy-wcs/data_hasil.php";
+                                                    // header('Location: ' . $redirect_page);
                                                 }
                                                 ?>
                                             </td>

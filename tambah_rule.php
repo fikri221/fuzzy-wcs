@@ -80,7 +80,7 @@ include "layouts/header.php";
                                     <div class="form-group col-md-3">
                                         <label for="">Kelembapan</label>
                                         <select id="kelembapan" name="kelembapan" class="selectpicker show-tick form-control">
-                                            <option value="Basah" <?php $kelembapan1 = "Basah";
+                                            <option value="Basah" <?php $kelembapan1 = "basah";
                                                                     if ($kelembapan == $kelembapan1) {
                                                                         echo "selected";
                                                                     } ?>>Basah</option>
